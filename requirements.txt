@@ -1,0 +1,4 @@
+spotipy
+requests
+pyserial
+pillow   # only needed for picture mode

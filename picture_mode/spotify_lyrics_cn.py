@@ -1,10 +1,7 @@
 """
 Spotify -> synced lyrics -> ESP32-S2 TFT Feather (over USB serial)   v7
 
-Picture mode: this script draws each line of text with one of your Mac's
-fonts (which have every Chinese character, Traditional AND Simplified, plus
-English, Japanese, Korean...) into a small black-and-white picture, and sends
-the picture to the board. The board has no fonts at all, so nothing can be missing.
+Picture mode: this script draws each line of text with one of your Mac's fonts
 
 Messages sent to the board (spotify_lyrics_display_cn.ino v7):
     C,                              clear the screen

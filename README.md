@@ -13,18 +13,9 @@ Spotify API ──► Python script (computer) ──USB serial──► Feather
 LRCLIB      ──►   timing + lyrics                         title / lyric / time bar
 ```
 
-## Two modes
-
-| | **Font mode** (recommended) | **Picture mode** |
-|---|---|---|
-| Folder | `font_mode/` | `picture_mode/` |
-| How text is drawn | The board draws the text with the built-in Noto Sans CJK fonts | The computer draws each line into a 1-bit picture and sends that |
-| Languages | English/Latin + ~21,000 Traditional & Simplified Chinese characters | Any language your computer's font has (incl. Japanese, Korean) |
-| Extras | Time bar with elapsed / total time | — |
-| Data sent per line | Just the text | ~7 KB per lyric line |
-| Python deps | spotipy, requests, pyserial | + pillow |
-
-Use **picture mode** if you listen to Japanese or Korean songs, since the font-mode fonts have no kana or Hangul.
+The board draws the text itself with built-in Noto Sans CJK fonts (12 px and 24 px). They cover English/Latin
+and about 21,000 Traditional and Simplified Chinese characters. Japanese kana and Korean Hangul aren't included.
+A time bar at the bottom shows elapsed and total time.
 
 ## Hardware
 
@@ -39,14 +30,13 @@ Use **picture mode** if you listen to Japanese or Korean songs, since the font-m
 2. Install these libraries (Library Manager):
    - Adafruit ST7735 and ST7789 Library
    - Adafruit GFX Library
-   - U8g2_for_Adafruit_GFX *(font mode only)*
+   - U8g2_for_Adafruit_GFX
 3. Tools menu:
    - **Board:** Adafruit Feather ESP32-S2 TFT
    - **USB CDC On Boot:** Enabled
-   - **Partition Scheme:** **Huge APP (3MB No OTA/1MB SPIFFS)**. *Font mode needs this.* The two CJK fonts
-     take about 2.2 MB, which doesn't fit the default ~1.3 MB app partition.
-4. Open and upload either `font_mode/spotify_lyrics_font/spotify_lyrics_font.ino` or
-   `picture_mode/spotify_lyrics_display_cn/spotify_lyrics_display_cn.ino`.
+   - **Partition Scheme:** **Huge APP (3MB No OTA/1MB SPIFFS)**. The two CJK fonts take about 2.2 MB,
+     which doesn't fit the default ~1.3 MB app partition.
+4. Open and upload `font_mode/spotify_lyrics_font/spotify_lyrics_font.ino`.
 
 If the upload doesn't start, hold **BOOT**, tap **RESET**, release **BOOT**, then upload again.
 
@@ -64,19 +54,14 @@ If the upload doesn't start, hold **BOOT**, tap **RESET**, release **BOOT**, the
    export SPOTIPY_CLIENT_SECRET="your-client-secret"
    ```
    (Windows PowerShell: `$env:SPOTIPY_CLIENT_ID="..."`)
-4. Close the Arduino Serial Monitor (only one program can use the port), then run the script for the
-   sketch you uploaded:
+4. Close the Arduino Serial Monitor (only one program can use the port), then run:
    ```sh
-   python3 font_mode/spotify_lyrics_font.py      # font mode
-   python3 picture_mode/spotify_lyrics_cn.py     # picture mode
+   python3 font_mode/spotify_lyrics_font.py
    ```
    The first time it runs, a browser opens so you can log in to Spotify.
 
 The script finds the board automatically on macOS, Linux and Windows. If it picks the wrong port,
 set `SERIAL_PORT` near the top of the script.
-
-Picture mode looks for a Chinese-capable font automatically (PingFang on macOS, Microsoft YaHei on Windows,
-Noto Sans CJK on Linux: `sudo apt install fonts-noto-cjk`). To use a different font, set `FONT_PATH`.
 
 ## Commands
 
@@ -95,20 +80,13 @@ Skip, seek and pause/play need Spotify Premium.
 
 ## Serial protocol
 
-One message per line, `\n`-terminated.
+One UTF-8 message per line, `\n`-terminated.
 
-**Font mode** (UTF-8 text)
 ```
 C,                          clear screen
 T,<title>                   title bar (12 px, green)
 M,<lyric>                   current lyric (24 px, white, up to 3 rows)
 P,<elapsed ms>,<total ms>,<1|0>   time bar (playing / paused)
-```
-
-**Picture mode**
-```
-C,                          clear screen
-I,<y>,<height>,<rgb565>,<hex>     240-px-wide 1-bit bitmap, 30 bytes per row, MSB first
 ```
 
 ## Repository layout
@@ -119,10 +97,6 @@ font_mode/
   spotify_lyrics_font/
     spotify_lyrics_font.ino              board side
     cjk_font_12.h, cjk_font_24.h         U8g2 fonts (Noto Sans CJK TC)
-picture_mode/
-  spotify_lyrics_cn.py                   computer side
-  spotify_lyrics_display_cn/
-    spotify_lyrics_display_cn.ino        board side
 legacy/                                  earlier English-only sketches (built-in 6x8 font)
 ```
 

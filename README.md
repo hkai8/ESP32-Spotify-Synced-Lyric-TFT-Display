@@ -40,6 +40,12 @@ A time bar at the bottom shows elapsed and total time.
 
 If the upload doesn't start, hold **BOOT**, tap **RESET**, release **BOOT**, then upload again.
 
+### Or with PlatformIO (VS Code)
+
+The repo includes a `platformio.ini` with the board, the Huge APP partition and the libraries already set.
+Open the repo folder in VS Code with the PlatformIO extension installed, then click **Build** (✓) and
+**Upload** (→) in the bottom status bar. The first build downloads the ESP32 toolchain and takes a few minutes.
+
 ## Computer setup
 
 1. Create an app at the [Spotify developer dashboard](https://developer.spotify.com/dashboard) and add
